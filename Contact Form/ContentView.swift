@@ -9,15 +9,33 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var emailAdress = ""
+    @State private var phoneNumber = ""
     @State private var message = "Write your message here..."
     @State private var includeLogs: Bool = false
     @State private var subject = "Help"
+    
+    @State private var preferredContactMethod = ContactMethod.email
+    
+    enum ContactMethod {
+        case email, phone
+    }
     
     var body: some View {
         NavigationView {
             Form {
                 Section(header: Text("How can we reach you?")) {
-                    TextField("Email Adress", text: $emailAdress)
+                    Picker("Contact Method", selection: $preferredContactMethod) {
+                        Text("Email").tag(ContactMethod.email)
+                        Text("Phone").tag(ContactMethod.phone)
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    switch preferredContactMethod {
+                    case .email:
+                        TextField("Email Adress", text: $emailAdress)
+                    case .phone:
+                        TextField("Phone Number", text: $phoneNumber)
+                    }
+                    
                 }
                 Section(header: Text("What can we help you with?")) {
                     Picker("Subject", selection: $subject) {
@@ -36,6 +54,7 @@ struct ContentView: View {
                     print("Submit Button Tapped")
                 }
             }
+            .navigationTitle("Contact Us")
         }
     }
 }
